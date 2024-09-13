@@ -10,7 +10,7 @@
 - Si no se cancela el 80% de la reserva en el rango estipulado la reserva queda inactiva
 - Se debe de adicionar costos a la reserva y al finalizar deberan culminar 100% de los costos por servicios extra
 - Los huespedes para entragar las habitaciones deberan cancelar el 100% de reserva con servicios excla incluidos
-
+- El costo de una habitacion dependera del tipo de habitación y de la categoria del hotel
 **Se debe poder consultar los siguientes datos**
 - Reservas realizadas en un período de tiempo.
 - Reservas que fueron canceladas sin pagar el valor del 20% de anticipo.

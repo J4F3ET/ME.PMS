@@ -6,9 +6,11 @@ Todas las entidades y atributos son esenciales para los requeriminetos del siste
 > usuarios, transacciones, negocio
 ## Entidades negocio en general
 Son entidades generales del negocio
+
+**Hotel**
 ```mermaid
 ---
-title: Entidades generales de negocio
+
 ---
 erDiagram
     hotel{
@@ -24,6 +26,13 @@ erDiagram
         int id_hotel PK,FK
         int phone PK
     }
+```
+**Habitación**: El costo de una habitacion dependera del tipo de habitación y de la categoria del hotel
+```mermaid
+---
+
+---
+erDiagram
     room{
         int id_hotel PK,FK
         int floor PK
@@ -39,6 +48,13 @@ erDiagram
 ```
 ## Entidades que reserva
 Son las entidades que de alguna u otra forma esta relacionada con la reserva por ejemplo el *registro* del usuario al llegar al hotel
+
+### Reserva
+**reservation**: La reservacion que hace o la agencia o el usuario responsable.
+
+**service**: Servicios que puede tener la reservacion, por ejemplo:
+ - Cuidado de mascotas
+ - Parqueadero
 ```mermaid
 ---
 title: Entidades de reserva
@@ -65,6 +81,20 @@ erDiagram
         int cost
         string name
     }
+```
+### Registro de reserva
+**invoice_fee_reservation**: Las cuotas de pago de la reserva
+
+**method_of_payment**: Metodos de pago que tiene la plataforma
+
+**registration**: Registro de la reserva y la habitacion
+
+**registration_guest**: Registro que asocia la habitacion al usuario
+```mermaid
+---
+title: Entidades de registro
+---
+erDiagram
     invoice_fee_reservation{
         int id_reservation PK,FK
         int id_fee PK
@@ -93,6 +123,14 @@ erDiagram
 ```
 ## Entidades de usuario
 Son las entidades encargadas de definir roles y datos de todos los usuarios del sistema
+**user**: Usuario del sistema
+
+**agency**: Tipo de usuario (Rol)
+
+**guest**: Tipo de usuario (Rol)
+
+**employee**: Tipo de usuario (Rol)
+
 ```mermaid
 ---
 title: Entidades de usuario
@@ -125,126 +163,19 @@ erDiagram
         string role
     }
 ```
-## Diagrama relacional v1
-Este diagrama no sera el definitivo pero es el mas fiel a los requerimientos dados por la [premisa](../../planning/problem.md)
+## Otras entidades
+Estas son entidades del sistema, datos que se usaran para algun analisis o otra funcionalidad.
+
+**log_category_update_hotel**: Los hoteles inician por defecto una categoria de 0 y al momento de poner su verdadera categoria se genera un log ese debera ser el primer log y la categoria verdadera del hotel
 ```mermaid
 ---
-title: Diagrama relacional
+title: Otras entidades
 ---
 erDiagram
-    hotel{
-        int id_hotel PK
-        int number_of_floors
-        int year_of_inauguration
-        int antiquity
-        float category
-        string address
-        string name
-    }
-    hotel ||--|{ phone_hotel : use
-    phone_hotel{
-        int id_hotel PK,FK
-        int phone PK
-    }
-    hotel ||--|{ room : has
-    reservation ||--|{ room : reserved
-    type_room ||--|{ room : has_a_type
-    room{
-        int id_hotel PK,FK
-        int floor PK
-        int type_of_room FK
-        int id_reservation FK
-    }
-    type_room{
-        int id_type_room PK
-        int cost
-        int number_of_beds
-        string description
-    }
-    agency o|--|{ reservation : has
-    guest ||--|{ reservation : responsible
-    reservation{
-        int id_reservation PK
-        int id_agency FK
-        int id_user FK
-        int id_guest FK
-        int number_of_people
-        int cost
-        boolean status
+    log_category_update_hotel{
+        int id_log PK
+        int id_holtel PK,FK
+        floar new_category "La categoria nueva"
         date date_registration
-        date date_init
-        date date_end
-    }
-    reservation ||--o{ service_reservation : acquires
-    service ||--o{ service_reservation : use
-    service_reservation{
-        int id_reservation PK,FK
-        int id_service PK,FK
-    }
-    service{
-        int id_service PK
-        int cost
-        string name
-    }
-    reservation ||--|{ invoice_fee_reservation : payment
-    method_of_payment || --|{invoice_fee_reservation: use
-    invoice_fee_reservation{
-        int id_reservation PK,FK
-        int id_fee PK
-        int value
-        int id_method_of_payment FK
-        date date_registration
-    }
-    user ||--|{ agency : is
-    agency{
-        int id_agency PK
-        string name_of_agency
-    }
-    method_of_payment{
-        int id_method_of_payment PK
-        string name
-    }
-    reservation ||--|{ registration : has
-    room ||--|{ registration : host
-    registration{
-        int id_reservation PK,FK
-        int id_hotel PK,FK
-        int floor PK,FK
-        boolean minor
-        boolean pet
-    }
-    registration ||--|{ registration_guest: accommodate
-    guest ||--|{ registration_guest: accommodate
-    registration_guest{
-        int id_reservation PK,FK
-        int id_hotel PK,FK
-        int floor PK,FK
-        int id_user PK,FK
-        int id_guest PK,FK
-    }
-    user{
-        int id_user PK
-        int age
-        string name
-        string address
-    }
-    user ||--|{ user_phone : use
-    user_phone{
-        int id_user PK,FK
-        int phone PK
-        int country_code
-    }
-    user ||--|{ guest : is
-    guest{
-        int id_user PK,FK
-        int id_guest PK
-    }
-    user ||--|{ employee : is
-    hotel ||--|{employee: has
-    employee{
-        int id_user PK,FK
-        int id_employee PK
-        int id_hotel FK
-        string role
     }
 ```
