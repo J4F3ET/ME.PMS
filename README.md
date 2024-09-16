@@ -7,3 +7,4 @@ Desarrollar un con java springboot un PMS.
 ### Que quiero aprender con este proyecto
 - Aprender ciclo de vida del desarollo de software (SDLC)
 - Micro servicios
+- Kafka: para consistencia en los datos y la comunicacion entre microservicios
