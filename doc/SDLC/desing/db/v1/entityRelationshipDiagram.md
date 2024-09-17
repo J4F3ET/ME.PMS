@@ -8,6 +8,49 @@ Todas las entidades y atributos son esenciales para los requeriminetos del siste
 Este diagrama no sera el definitivo pero es el mas fiel a los requerimientos dados por la [premisa](../../planning/problem.md)
 ```mermaid
 ---
+title: Diagrama relacional sin detalles
+---
+erDiagram
+    hotel
+    hotel ||--|{ phone_hotel : use
+    phone_hotel
+    hotel ||--|{ log_category_update_hotel : updated
+    log_category_update_hotel
+    hotel ||--|{ room : has
+    reservation ||--|{ room : reserved
+    type_room ||--|{ room : has_a_type
+    room
+    type_room
+    agency o|--|{ reservation : has
+    guest ||--|{ reservation : responsible
+    reservation
+    reservation ||--o{ service_reservation : acquires
+    service ||--o{ service_reservation : use
+    service_reservation
+    service
+    reservation ||--|{ invoice_fee_reservation : payment
+    method_of_payment || --|{invoice_fee_reservation: use
+    invoice_fee_reservation
+    user ||--|{ agency : is
+    agency
+    method_of_payment
+    reservation ||--|{ registration : has
+    room ||--|{ registration : host
+    registration
+    registration ||--|{ registration_guest: accommodate
+    guest ||--|{ registration_guest: accommodate
+    registration_guest
+    user
+    user ||--|{ user_phone : use
+    user_phone
+    user ||--|{ guest : is
+    guest
+    user ||--|{ employee : is
+    hotel ||--|{employee: has
+    employee
+```
+```mermaid
+---
 title: Diagrama relacional
 ---
 erDiagram

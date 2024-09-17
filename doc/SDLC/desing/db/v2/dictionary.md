@@ -145,6 +145,10 @@ erDiagram
         int id_user PK
         int id_guest PK
     }
+    id_agency{
+        int id_user PK
+        int id_agency PK
+    }
     no_user_guest{
         int id_user PK,FK "id del usuario responsable y registrado"
         int id_guest PK,FK "id del usuario responsable y registrado"

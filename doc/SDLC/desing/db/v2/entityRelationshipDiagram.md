@@ -1,21 +1,28 @@
-# Base de datos v1
-Todas las entidades y atributos son esenciales para los requeriminetos del sistema
+# Bases de datos v2
+Todas las bases de datos de cada uno de los microservicios en base a la base de datos monolitica
+Este diagrama no sera el definitivo pero es el mas fiel a los requerimientos dados por la [premisa](../../planning/problem.md)
 > [!IMPORTANT]
 > Esta es la primera version de la base de datos no esta acorde con el objetivo que es implementar micro servicios
 > , por lo anterior se infiere es que de esta version se desacoplara distintos sistemas como
 > usuarios, transacciones, negocio
-## Diagrama relacional v1
-Este diagrama no sera el definitivo pero es el mas fiel a los requerimientos dados por la [premisa](../../planning/problem.md)
+## Gestion de habitaciones
 ```mermaid
 ---
-title: Diagrama relacional
+title: BD Gestion de habitacion
 ---
 erDiagram
+    hotel ||--|{ log_category_update_hotel : register
+    log_category_update_hotel{
+        int id_log PK
+        int id_holtel PK,FK
+        floar new_category "La categoria nueva"
+        date date_registration
+    }
     hotel{
         int id_hotel PK
-        int number_of_floors
+        int number_of_floors "La cantidad de pisos es importante para la nomenclatura de las piezas"
         int year_of_inauguration
-        int antiquity
+        int antiquity "La antiguedad es derivada del año de inauguración"
         float category
         string address
         string name
@@ -25,35 +32,49 @@ erDiagram
         int id_hotel PK,FK
         int phone PK
     }
-    hotel ||--|{ log_category_update_hotel : updated
-    log_category_update_hotel{
-        int id_log PK
-        int id_holtel PK,FK
-        floar new_category
-        date date_registration
-    }
     hotel ||--|{ room : has
-    reservation ||--|{ room : reserved
-    type_room ||--|{ room : has_a_type
     room{
         int id_hotel PK,FK
         int floor PK
+        int cost "El costo dependera de la categoria y el tipo de abitación"
         int type_of_room FK
-        int id_reservation FK
     }
+    type_room ||--|{ room : define
     type_room{
         int id_type_room PK
-        int cost
         int number_of_beds
         string description
     }
-    agency o|--|{ reservation : has
-    guest ||--|{ reservation : responsible
+```
+## Gestion de reservas
+```mermaid
+---
+title: BD Gestion de reservas
+---
+erDiagram
+    id_responsible_guest{
+        int id_user PK
+        int id_guest PK
+    }
+    id_responsible_guest ||--|{ no_user_guest : responsible
+    no_user_guest{
+        int id_user PK,FK "id del usuario responsable y registrado"
+        int id_guest PK,FK "id del usuario responsable y registrado"
+        int id_no_user_guest PK
+        string name
+    }
+    id_agency{
+        int id_user PK
+        int id_agency PK
+    }
+    id_responsible_guest ||--|{ reservation : responsible
+    id_agency ||--|{ reservation : responsible
     reservation{
         int id_reservation PK
-        int id_agency FK
-        int id_user FK
-        int id_guest FK
+        int id_user FK "NOT NULL id del usuario responsable"
+        int id_guest FK "NOT NULL id del usuario responsable"
+        int id_agency FK "NULL id de la agencia"
+        int id_user_agency FK "NULL id de la agencia"
         int number_of_people
         int cost
         boolean status
@@ -61,8 +82,19 @@ erDiagram
         date date_init
         date date_end
     }
-    reservation ||--o{ service_reservation : acquires
-    service ||--o{ service_reservation : use
+    id_room{
+        int id_hotel PK
+        int floor PK
+    }
+    id_room ||--|{ reservation_room : reserved
+    reservation ||--|{ reservation_room : reserve
+    reservation_room{
+        int id_reservation PK,FK
+        int id_hotel PK,FK "id de la sala"
+        int floor PK,FK "id de la sala"
+    }
+    reservation ||--|{ service_reservation : request
+    service ||--|{ service_reservation : use
     service_reservation{
         int id_reservation PK,FK
         int id_service PK,FK
@@ -72,8 +104,35 @@ erDiagram
         int cost
         string name
     }
-    reservation ||--|{ invoice_fee_reservation : payment
-    method_of_payment || --|{invoice_fee_reservation: use
+    id_room ||--|{ registration : reserved
+    reservation ||--|{ registration : income
+    registration{
+        int id_reservation PK,FK
+        int id_hotel PK,FK "id de la sala"
+        int floor PK,FK "id de la sala"
+        boolean minor
+        boolean pet
+    }
+    registration ||--|{ registration_guest : reserved
+    id_responsible_guest ||--|{ registration_guest : reserved
+    no_user_guest ||--|{ registration_guest : reserved
+    registration_guest{
+        int id_reservation PK,FK "id del registro"
+        int id_hotel PK,FK "id del registro"
+        int floor PK,FK "id del registro"
+        int id_user PK,FK "id del usuario"
+        int id_guest PK,FK "id del usuario"
+        int id_no_user_guest FK "NULL id del usuario no responsable si es que tiene"
+    }
+```
+## Facturacion
+```mermaid
+---
+title: BD facturacion
+---
+erDiagram
+    method_of_payment ||--|{ invoice_fee_reservation: use
+    reservation ||--|{ invoice_fee_reservation: pay
     invoice_fee_reservation{
         int id_reservation PK,FK
         int id_fee PK
@@ -81,52 +140,47 @@ erDiagram
         int id_method_of_payment FK
         date date_registration
     }
-    user ||--|{ agency : is
-    agency{
-        int id_agency PK
-        string name_of_agency
-    }
     method_of_payment{
         int id_method_of_payment PK
         string name
     }
-    reservation ||--|{ registration : has
-    room ||--|{ registration : host
-    registration{
-        int id_reservation PK,FK
-        int id_hotel PK,FK
-        int floor PK,FK
-        boolean minor
-        boolean pet
+    reservation{
+        int id_reservation PK
+        int cost
     }
-    registration ||--|{ registration_guest: accommodate
-    guest ||--|{ registration_guest: accommodate
-    registration_guest{
-        int id_reservation PK,FK
-        int id_hotel PK,FK
-        int floor PK,FK
-        int id_user PK,FK
-        int id_guest PK,FK
-    }
+```
+## Gestion de usuarios
+```mermaid
+---
+title: BD Gestion de usuarios
+---
+erDiagram
     user{
         int id_user PK
-        int age
         string name
+        string email
+        string password
         string address
     }
-    user ||--|{ user_phone : use
+    user ||--|{ user_phone:has
     user_phone{
         int id_user PK,FK
         int phone PK
         int country_code
     }
-    user ||--|{ guest : is
+    user ||--|{ agency: is
+    agency{
+        int id_user PK,FK
+        int id_agency PK
+        string name_of_agency
+    }
+    user ||--|{ guest:is
     guest{
         int id_user PK,FK
         int id_guest PK
+        int age
     }
-    user ||--|{ employee : is
-    hotel ||--|{employee: has
+    user ||--|{ employee:is
     employee{
         int id_user PK,FK
         int id_employee PK
