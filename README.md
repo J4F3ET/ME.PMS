@@ -12,4 +12,4 @@ Desarrollar un con java springboot un PMS.
 
 ## Arquitectura
 
-![arquitectura](/doc/SDLC/desing/architecture/v3.png)
+![arquitectura](/doc/project-info/desing/architecture/v3-local.png)
