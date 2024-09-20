@@ -7,4 +7,9 @@ Desarrollar un con java springboot un PMS.
 ### Que quiero aprender con este proyecto
 - Aprender ciclo de vida del desarollo de software (SDLC)
 - Micro servicios
+- Service mesh
 - Kafka: para consistencia en los datos y la comunicacion entre microservicios
+
+## Arquitectura
+
+![arquitectura](/doc/SDLC/desing/architecture/v3.png)
