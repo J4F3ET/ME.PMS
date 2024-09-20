@@ -38,6 +38,7 @@ erDiagram
         int floor PK
         int cost "El costo dependera de la categoria y el tipo de abitación"
         int type_of_room FK
+        boolean status "El estado es definido si la habitacion tiene un reserva activa o no"
     }
     type_room{
         int id_type_room PK
@@ -125,9 +126,9 @@ erDiagram
         int id_reservation PK,FK "id del registro"
         int id_hotel PK,FK "id del registro"
         int floor PK,FK "id del registro"
-        int id_user PK,FK "id del usuario"
-        int id_guest PK,FK "id del usuario"
-        int id_no_user_guest FK "NULL id del usuario no responsable si es que tiene"
+        int id_user PK,FK "id del usuario no responsable"
+        int id_guest PK,FK "id del usuario no responsable"
+        int id_no_user_guest PK,FK "id del usuario no responsable"
     }
 ```
 

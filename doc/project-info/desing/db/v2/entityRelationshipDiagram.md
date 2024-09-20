@@ -1,10 +1,8 @@
 # Bases de datos v2
 Todas las bases de datos de cada uno de los microservicios en base a la base de datos monolitica
-Este diagrama no sera el definitivo pero es el mas fiel a los requerimientos dados por la [premisa](../../planning/problem.md)
+Estos diagramas no seran el definitivos pero son diferidos de los requeriminetos y de la version 1 [premisa](../../planning/problem.md)
 > [!IMPORTANT]
-> Esta es la primera version de la base de datos no esta acorde con el objetivo que es implementar micro servicios
-> , por lo anterior se infiere es que de esta version se desacoplara distintos sistemas como
-> usuarios, transacciones, negocio
+> Esta es la segunda version de la base de datos esta acorde con el objetivo que es implementar micro servicios.
 ## Gestion de habitaciones
 ```mermaid
 ---
@@ -15,14 +13,14 @@ erDiagram
     log_category_update_hotel{
         int id_log PK
         int id_holtel PK,FK
-        floar new_category "La categoria nueva"
+        floar new_category
         date date_registration
     }
     hotel{
         int id_hotel PK
-        int number_of_floors "La cantidad de pisos es importante para la nomenclatura de las piezas"
+        int number_of_floors
         int year_of_inauguration
-        int antiquity "La antiguedad es derivada del año de inauguración"
+        int antiquity
         float category
         string address
         string name
@@ -36,7 +34,8 @@ erDiagram
     room{
         int id_hotel PK,FK
         int floor PK
-        int cost "El costo dependera de la categoria y el tipo de abitación"
+        int cost
+        boolean status
         int type_of_room FK
     }
     type_room ||--|{ room : define
@@ -58,8 +57,8 @@ erDiagram
     }
     id_responsible_guest ||--|{ no_user_guest : responsible
     no_user_guest{
-        int id_user PK,FK "id del usuario responsable y registrado"
-        int id_guest PK,FK "id del usuario responsable y registrado"
+        int id_user PK,FK
+        int id_guest PK,FK
         int id_no_user_guest PK
         string name
     }
@@ -71,10 +70,10 @@ erDiagram
     id_agency ||--|{ reservation : responsible
     reservation{
         int id_reservation PK
-        int id_user FK "NOT NULL id del usuario responsable"
-        int id_guest FK "NOT NULL id del usuario responsable"
-        int id_agency FK "NULL id de la agencia"
-        int id_user_agency FK "NULL id de la agencia"
+        int id_user FK
+        int id_guest FK
+        int id_agency FK
+        int id_user_agency FK
         int number_of_people
         int cost
         boolean status
@@ -90,8 +89,8 @@ erDiagram
     reservation ||--|{ reservation_room : reserve
     reservation_room{
         int id_reservation PK,FK
-        int id_hotel PK,FK "id de la sala"
-        int floor PK,FK "id de la sala"
+        int id_hotel PK,FK
+        int floor PK,FK
     }
     reservation ||--|{ service_reservation : request
     service ||--|{ service_reservation : use
@@ -108,8 +107,8 @@ erDiagram
     reservation ||--|{ registration : income
     registration{
         int id_reservation PK,FK
-        int id_hotel PK,FK "id de la sala"
-        int floor PK,FK "id de la sala"
+        int id_hotel PK,FK
+        int floor PK,FK
         boolean minor
         boolean pet
     }
@@ -117,12 +116,12 @@ erDiagram
     id_responsible_guest ||--|{ registration_guest : reserved
     no_user_guest ||--|{ registration_guest : reserved
     registration_guest{
-        int id_reservation PK,FK "id del registro"
-        int id_hotel PK,FK "id del registro"
-        int floor PK,FK "id del registro"
-        int id_user PK,FK "id del usuario"
-        int id_guest PK,FK "id del usuario"
-        int id_no_user_guest FK "NULL id del usuario no responsable si es que tiene"
+        int id_reservation PK,FK
+        int id_hotel PK,FK
+        int floor PK,FK
+        int id_user PK,FK
+        int id_guest PK,FK
+        int id_no_user_guest PK,FK
     }
 ```
 ## Facturacion
